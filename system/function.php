@@ -2,14 +2,14 @@
 //Функция для построения правильных URL
 function createUrl($to, $params = array(), $module = NULL){
     $url = $_SERVER['SERVER_NAME'];
-    $url = 'http://'.$url.'/'.basename(dirname(__DIR__)).'/index.php?r='.$to;
+    $url = 'http://' . $url . '/' . basename(dirname(__DIR__)) . '/index.php?r=' . $to;
 
     foreach($params as $key => $value){
-        $url .= "&".$key."=".$value;
+        $url .= "&" . $key . "=" . $value;
     }
 
     if(isset($module)){
-        $url .= "&m=".$module;
+        $url .= "&m=" . $module;
     }
 
     return $url;
@@ -17,7 +17,7 @@ function createUrl($to, $params = array(), $module = NULL){
 
 function baseUrl(){
     $url = $_SERVER['SERVER_NAME'];
-    $url = '/'.basename(dirname(__DIR__));
+    $url = '/' . basename(dirname(__DIR__));
 
     return $url;
 }
@@ -33,7 +33,7 @@ function secureData($data, $connect = NULL){
 }
 
 function checkExistFile($file){
-    $list = scandir(BASE_PATH."/includes");
+    $list = scandir(BASE_PATH . "/includes");
     $file .= ".php";
 
     array_shift($list);
@@ -142,17 +142,17 @@ function sendEmail($to){
                         <body>
                             <p>Здравствуйте!</p>
                             <br>
-                            <p>'.$message.'</p>
+                            <p>' . $message . '</p>
                             <br>
                             <p>--</p>
                             <p>С уважением команда проекта MLM-REKLAMA</p>
                         </body>
                     </html>';
 
-    $from = "=?utf-8?B?".base64_encode($from_name)."?="." <".$from.">";
-    $headers = "From: ".$from."\r\nReply-To: ".$from."\r\nContent-type: ".$type."; charset=".$encoding."\r\n";
+    $from = "=?utf-8?B?" . base64_encode($from_name) . "?=" . " <" . $from . ">";
+    $headers = "From: " . $from . "\r\nReply-To: " . $from . "\r\nContent-type: " . $type . "; charset=" . $encoding . "\r\n";
 
-    $subject = "=?utf-8?B?".base64_encode($subject)."?=";
+    $subject = "=?utf-8?B?" . base64_encode($subject) . "?=";
     mail($to, $subject, $message_text, $headers);
 }
 
@@ -192,18 +192,30 @@ function minusBalance($username, $amount, $connect){
 
 function plusBalance($username, $amount, $connect){
     if(!isGuest()){
-        mysqli_query($connect, "UPDATE tb_users SET balance = balance + '{$amount}' WHERE username = '{$username}'");
+        mysqli_query($connect, "UPDATE tb_users SET balance = balance + '{$amount}' WHERE username='{$username}'");
     }
 }
 
 function hasBonus($connect){
     if(!isGuest()){
         $username = $_SESSION['username'];
-        $query = mysqli_query($connect, "SELECT last_bonus FROM tb_users WHERE username = '{$username}'");
+        $query = mysqli_query($connect, "SELECT last_bonus FROM tb_users WHERE username='{$username}'");
         $result = mysqli_fetch_array($query);
 
         if($result['last_bonus'] + 1 * 24 * 3600 < time() && $result['last_bonus'] != 0) return true;else
             return false;
+    }
+}
+
+function canLookAds($id, $connect){
+    if(!isGuest()){
+        $username = $_SESSION['username'];
+        $query = mysqli_query($connect, "SELECT * FROM tb_adver_looked WHERE id_site={$id} AND username='{$username}'");
+        if(mysqli_num_rows($query) > 0){
+            return false;
+        }else{
+            return true;
+        }
     }
 }
 
@@ -212,12 +224,12 @@ function render($view, $param = NULL){
         return;
 
     require_once("header.php");
-    require_once($view.".php");
+    require_once($view . ".php");
     require_once("footer.php");
 }
 
 function renderPartial($view, $param = NULL){
     if(is_array($param)) extract($param);
 
-    require_once($view.".php");
+    require_once($view . ".php");
 }

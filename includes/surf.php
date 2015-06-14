@@ -17,49 +17,48 @@ if(mysqli_num_rows($query) > 0){
     <span id="hash"></span>
 </div>
 
-<style>
-    .ui-dialog-titlebar-close {
-        display: none
-    }
-</style>
-
-
 <script>
     function go(id) {
         $.post("<?php echo baseUrl(); ?>/ajax/ajax_ads.php", {'id': id, 'type': 'get'}, function (data) {
             $(function () {
-                data = data.split('  ');
-                var name = data[0];
-                var url = data[1];
-                var timer = data[2];
-                var hash = data[3];
+                if(data != "error") {
+                    data = data.split('  ');
+                    var name = data[0];
+                    var url = data[1];
+                    var timer = data[2];
+                    var hash = data[3];
 
-                $("#dialog-message").dialog({
-                    modal: true,
-                    title: name,
-                    width: window.innerWidth,
-                    height: window.innerHeight
-                });
-                $('<iframe src="' + url + '" style="width: 100%; height: 90%;">').insertBefore($("#timer"));
-                $("#timer").html(timer);
+                    $("#dialog-message").dialog({
+                        modal: true,
+                        title: name,
+                        width: window.innerWidth,
+                        height: window.innerHeight
+                    });
+                    $('<iframe src="' + url + '" style="width: 100%; height: 90%;">').insertBefore($("#timer"));
+                    $("#timer").html(timer);
 
-                inteval_ID = setInterval(check, 1000);
+                    inteval_ID = setInterval(check, 1000);
 
-                function check() {
-                    if (document.getElementById("timer").innerHTML > 0)
-                        document.getElementById("timer").innerHTML--;
-                    else {
-                        $.post("<?php echo baseUrl(); ?>/ajax/ajax_ads.php", {
-                            'id': id,
-                            'hash': hash,
-                            'type': 'check'
-                        }, function (data) {
-                            if(data == "good"){
-                                $("#dialog-message").dialog("close");
-                            }
-                        });
-                        clearInterval(inteval_ID);
+                    function check() {
+                        if (document.getElementById("timer").innerHTML > 0)
+                            document.getElementById("timer").innerHTML--;
+                        else {
+                            $.post("<?php echo baseUrl(); ?>/ajax/ajax_ads.php", {
+                                'id': id,
+                                'hash': hash,
+                                'type': 'check'
+                            }, function (data) {
+                                if (data == "error") {
+                                    $("#dialog-message").dialog("close");
+                                } else {
+                                    $("#timer").text("Успешно начислено 0.01 р");
+                                }
+                            });
+                            clearInterval(inteval_ID);
+                        }
                     }
+                }else{
+                    $("#timer").text("Возникла ошибка");
                 }
             });
         });
