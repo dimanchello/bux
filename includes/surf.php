@@ -1,8 +1,13 @@
+<center><span id="error"></span></center>
+
+<br/>
+
 <?php
 $query = mysqli_query($connect, "SELECT * FROM tb_adver WHERE status=1");
 if(mysqli_num_rows($query) > 0){
     while($result = mysqli_fetch_assoc($query)){
-        echo "<div class = 'ads' onclick='go(".$result['id'].")'><span id='ads'>".$result['name']."</span></div><br />";
+        if(canLookAds($result['id'], $connect))
+            echo "<div class = 'ads' id='ads" . $result['id'] . "' onclick='go(" . $result['id'] . ")'><span id='ads'>" . $result['name'] . "</span></div>";
     }
 }else{
     echo "<center>Сайтов к просмотру нету</center>";
@@ -21,19 +26,28 @@ if(mysqli_num_rows($query) > 0){
     function go(id) {
         $.post("<?php echo baseUrl(); ?>/ajax/ajax_ads.php", {'id': id, 'type': 'get'}, function (data) {
             $(function () {
-                if(data != "error") {
-                    data = data.split('  ');
-                    var name = data[0];
-                    var url = data[1];
-                    var timer = data[2];
-                    var hash = data[3];
+                data = data.split('  ');
+                var name = data[0];
+                var url = data[1];
+                var timer = data[2];
+                var hash = data[3];
 
+                var inteval_ID;
+
+
+                if(data == "error"){
+                    $("#error").text("Вы не можете просмотреть этот сайт");
+                }else {
                     $("#dialog-message").dialog({
                         modal: true,
                         title: name,
                         width: window.innerWidth,
-                        height: window.innerHeight
+                        height: window.innerHeight,
+                        close: function () {
+                            clearInterval(inteval_ID);
+                        }
                     });
+
                     $('<iframe src="' + url + '" style="width: 100%; height: 90%;">').insertBefore($("#timer"));
                     $("#timer").html(timer);
 
@@ -47,18 +61,13 @@ if(mysqli_num_rows($query) > 0){
                                 'id': id,
                                 'hash': hash,
                                 'type': 'check'
-                            }, function (data) {
-                                if (data == "error") {
-                                    $("#dialog-message").dialog("close");
-                                } else {
-                                    $("#timer").text("Успешно начислено 0.01 р");
-                                }
+                            }, function () {
+                                $("#timer").text("Успешно начислено 0.01 р");
+                                $("#ads" + id).fadeOut(4000);
                             });
                             clearInterval(inteval_ID);
                         }
                     }
-                }else{
-                    $("#timer").text("Возникла ошибка");
                 }
             });
         });

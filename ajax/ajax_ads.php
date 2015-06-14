@@ -13,11 +13,15 @@ if(isset($_POST)){
     $id = intval($_POST['id']);
     $query = mysqli_query($connect, "SELECT * FROM tb_adver WHERE id={$id} AND status=1");
     if(mysqli_num_rows($query) > 0){
-        if(canLookAds($id, $connect)){
-            $result = mysqli_fetch_assoc($query);
-            if($_POST['type'] == 'get'){
+        $result = mysqli_fetch_assoc($query);
+        if($_POST['type'] == 'get'){
+            if(canLookAds($id, $connect)){
                 echo $result['name'] . "  " . $result['url'] . "  " . $result['timer'] . "  " . $result['key_hash'];
-            }else if($_POST['type'] == 'check'){
+            }else{
+                echo "error";
+            }
+        }else if($_POST['type'] == 'check'){
+            if(canLookAds($id, $connect)){
                 $hash = $_POST['hash'];
                 if($hash == $result['key_hash']){
                     $username = $_SESSION['username'];
@@ -31,9 +35,9 @@ if(isset($_POST)){
                     $date = time();
                     mysqli_query($connect, "INSERT INTO tb_adver_looked(id_site, username, date)VALUES('{$id_site}', '{$username}', '{$date}')");
                 }
+            }else{
+                echo "error";
             }
-        }else{
-            echo "error";
         }
     }
 }

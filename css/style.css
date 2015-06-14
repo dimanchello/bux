@@ -562,4 +562,5 @@ div.flash-error, div.flash-notice, div.flash-success{
 	color: darkgreen;
 	border: 2px solid darkgreen;
 	padding: 20px 20px 20px 20px;
+    margin-bottom: 20px;
 }
