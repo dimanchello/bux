@@ -221,6 +221,11 @@ function canLookAds($id, $connect){
         $username = $_SESSION['username'];
         $query = mysqli_query($connect, "SELECT * FROM tb_adver_looked WHERE id_site={$id} AND username='{$username}'");
         if(mysqli_num_rows($query) > 0){
+            $adver_query = mysqli_query($connect, "SELECT * FROM tb_adver WHERE id={$id}");
+            $res = mysqli_fetch_assoc($adver_query);
+            if($res['visit_all'] <= $res['visited']){
+                mysqli_query($connect, "DELETE FROM tb_adver WHERE id={$id}");
+            }
             return false;
         }else{
             return true;

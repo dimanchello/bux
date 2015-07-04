@@ -18,7 +18,13 @@ if(mysqli_num_rows($query) > 0){
 
 
 <div id="dialog-message">
-    <span id="timer"></span>
+    <iframe id="site" style="width: 100%; height: 90%; display: none;"></iframe>
+    <table border="0">
+        <tr>
+            <td><img src="<?php echo baseUrl(); ?>/images/timer.png" id="imgtimer" style="display: none;" width="32" height="32"></td>
+            <td><span id="timer"></span></td>
+        </tr>
+    </table>
     <span id="hash"></span>
 </div>
 
@@ -48,7 +54,13 @@ if(mysqli_num_rows($query) > 0){
                         }
                     });
 
-                    $('<iframe src="' + url + '" style="width: 100%; height: 90%;">').insertBefore($("#timer"));
+                    var iframe = document.getElementById("site");
+                    iframe.src = url;
+                    iframe.style.display = "block";
+
+                    var timg = document.getElementById("imgtimer");
+                    timg.style.display = "block";
+
                     $("#timer").html(timer);
 
                     function check() {
@@ -68,8 +80,6 @@ if(mysqli_num_rows($query) > 0){
                     }
 
                     inteval_ID = setInterval(check, 1000);
-
-
                 }
             });
         });
