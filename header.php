@@ -28,6 +28,7 @@
                     <li id="<?php if($current_file == 'advertise') echo 'current'; ?>"><a href="<?php echo createUrl("advertise"); ?>">Рекламодателю</a></li>
                     <li id="<?php if($current_file == 'contact') echo 'current'; ?>"><a href="<?php echo createUrl("contact"); ?>">Контакты</a></li>
                     <?php if(!isGuest()) :?>
+                    <li><a href="<?php echo createUrl("index", [], "admin"); ?>">Админка</a></li>
                     <li><a href="<?php echo createUrl("logout"); ?>">Выход</a></li>
                     <?php endif; ?>
                 </ul>

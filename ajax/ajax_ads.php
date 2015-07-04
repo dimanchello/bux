@@ -33,6 +33,7 @@ if(isset($_POST)){
                     }
                     $id_site = $result['id'];
                     $date = time();
+                    mysqli_query($connect, "UPDATE tb_adver SET visited = visited + 1 WHERE id='{$id}'");
                     mysqli_query($connect, "INSERT INTO tb_adver_looked(id_site, username, date)VALUES('{$id_site}', '{$username}', '{$date}')");
                 }
             }else{

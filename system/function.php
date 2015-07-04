@@ -46,12 +46,37 @@ function checkExistFile($file){
     }
 }
 
+function getUserParam($connect, $username = NULL){
+    if($username == NULL){
+        $username = $_SESSION['username'];
+    }
+
+    $query = mysqli_query($connect, "SELECT * FROM tb_users WHERE username = '$username'");
+
+    if(mysqli_num_rows($query) > 0){
+        $result = mysqli_fetch_assoc($query);
+
+        return $result;
+    }else{
+        return null;
+    }
+}
+
 function isGuest(){
     if(isset($_SESSION['username']) && isset($_SESSION['password'])){
         return false;
     }else{
         return true;
     }
+}
+
+function isAdmin($connect){
+    $status = getUserParam($connect)['status'];
+
+    if($status == 2)
+        return true;
+    else
+        return false;
 }
 
 function validateEmail($data){
@@ -166,22 +191,6 @@ function getConfig($param, $connect){
 
 function setConfig($param, $value, $connect){
     $query = mysqli_query($connect, "UPDATE tb_config SET value = '$value' WHERE param = '$param'");
-}
-
-function getUserParam($connect, $username = NULL){
-    if($username == NULL){
-        $username = $_SESSION['username'];
-    }
-
-    $query = mysqli_query($connect, "SELECT * FROM tb_users WHERE username = '$username'");
-
-    if(mysqli_num_rows($query) > 0){
-        $result = mysqli_fetch_assoc($query);
-
-        return $result;
-    }else{
-        return null;
-    }
 }
 
 function minusBalance($username, $amount, $connect){

@@ -35,9 +35,9 @@ if(mysqli_num_rows($query) > 0){
                 var inteval_ID;
 
 
-                if(data == "error"){
+                if (data == "error") {
                     $("#error").text("Вы не можете просмотреть этот сайт");
-                }else {
+                } else {
                     $("#dialog-message").dialog({
                         modal: true,
                         title: name,
@@ -51,12 +51,10 @@ if(mysqli_num_rows($query) > 0){
                     $('<iframe src="' + url + '" style="width: 100%; height: 90%;">').insertBefore($("#timer"));
                     $("#timer").html(timer);
 
-                    inteval_ID = setInterval(check, 1000);
-
                     function check() {
-                        if (document.getElementById("timer").innerHTML > 0)
+                        if (document.getElementById("timer").innerHTML > 0) {
                             document.getElementById("timer").innerHTML--;
-                        else {
+                        } else {
                             $.post("<?php echo baseUrl(); ?>/ajax/ajax_ads.php", {
                                 'id': id,
                                 'hash': hash,
@@ -68,6 +66,10 @@ if(mysqli_num_rows($query) > 0){
                             clearInterval(inteval_ID);
                         }
                     }
+
+                    inteval_ID = setInterval(check, 1000);
+
+
                 }
             });
         });

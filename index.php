@@ -17,15 +17,27 @@ define('BASE_PATH', dirname(__FILE__));
 
 //Сохраняем реферала
 if(isset($_GET['ref'])){
-	setcookie('ref', intval($_GET['ref']));
+    setcookie('ref', intval($_GET['ref']));
 }
 
 //Смотрим какой файл будем запускать
-$current_file = isset($_GET['r']) && checkExistFile(secureData($_GET['r'], $connect)) ? $_GET['r'] : 'index';
-
-//Вызываем шаблон
-if(isset($_GET['no'])){
-	renderPartial(BASE_PATH.'/includes/'.$current_file, ['connect'=>$connect]);
+if(isset($_GET['m'])){
+    $moduleName = secureData($_GET['m'], $connect);
+    $path = BASE_PATH.DIRECTORY_SEPARATOR.'modules'.DIRECTORY_SEPARATOR.$moduleName.DIRECTORY_SEPARATOR;
+    if(is_dir(BASE_PATH.DIRECTORY_SEPARATOR.'modules'.DIRECTORY_SEPARATOR.$moduleName)){
+        if(file_exists($path.'header.php') && file_exists($path.'footer.php')){
+            require($path.'header.php');
+            require($path.'index.php');
+            require($path.'footer.php');
+        }
+    }
 }else{
-	render(BASE_PATH.'/includes/'.$current_file, ['connect'=>$connect, 'current_file'=>$current_file]);
+    $current_file = isset($_GET['r']) && checkExistFile(secureData($_GET['r'], $connect)) ? $_GET['r'] : 'index';
+
+    //Вызываем шаблон
+    if(isset($_GET['no'])){
+        renderPartial(BASE_PATH . '/includes/' . $current_file, ['connect' => $connect]);
+    }else{
+        render(BASE_PATH . '/includes/' . $current_file, ['connect' => $connect, 'current_file' => $current_file]);
+    }
 }
