@@ -4,8 +4,10 @@ function createUrl($to, $params = array(), $module = NULL){
     $url = $_SERVER['SERVER_NAME'];
     $url = 'http://' . $url . '/' . basename(dirname(__DIR__)) . '/index.php?r=' . $to;
 
-    foreach($params as $key => $value){
-        $url .= "&" . $key . "=" . $value;
+    if($params != null){
+        foreach($params as $key => $value){
+            $url .= "&" . $key . "=" . $value;
+        }
     }
 
     if(isset($module)){

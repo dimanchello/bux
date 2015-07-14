@@ -24,11 +24,13 @@ if(isset($_GET['ref'])){
 if(isset($_GET['m'])){
     $moduleName = secureData($_GET['m'], $connect);
     $path = BASE_PATH.DIRECTORY_SEPARATOR.'modules'.DIRECTORY_SEPARATOR.$moduleName.DIRECTORY_SEPARATOR;
+    $current_file = secureData($_GET['r'], $connect);
+
     if(is_dir(BASE_PATH.DIRECTORY_SEPARATOR.'modules'.DIRECTORY_SEPARATOR.$moduleName)){
-        if(file_exists($path.'header.php') && file_exists($path.'footer.php')){
-            require($path.'header.php');
-            require($path.'index.php');
-            require($path.'footer.php');
+        if(file_exists($path.DIRECTORY_SEPARATOR.'blocks/header.php') && file_exists($path.DIRECTORY_SEPARATOR.'blocks/footer.php')){
+            require($path.DIRECTORY_SEPARATOR.'blocks/header.php');
+            require($path.$current_file.'.php');
+            require($path.DIRECTORY_SEPARATOR.'blocks/footer.php');
         }
     }
 }else{
